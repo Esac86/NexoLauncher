@@ -4,21 +4,19 @@
 ![Python](https://img.shields.io/badge/Python-3.10+-55FFFF?style=for-the-badge&logo=python)
 ![Licencia](https://img.shields.io/badge/Licencia-Proprietaria-red?style=for-the-badge)
 
-**Nexo Abierto Launcher** es una plataforma de acceso de alto rendimiento para Minecraft, diseñada con un enfoque en la estética moderna, la optimización de recursos y la transparencia absoluta.
+**Nexo Abierto Launcher** es una plataforma de acceso para Minecraft, diseñada con un enfoque en la estética moderna, la optimización de recursos y la transparencia absoluta.
 
 ---
 
 ## ✨ Características Principales
 
-* **Interfaz Ultra-Moderna**: Desarrollada con `CustomTkinter` para una experiencia visual fluida y profesional.
-* **Gestión de Descargas Inteligente**: Barra de progreso real con métricas en MB y porcentaje de descarga preciso.
+* **Interfaz Simple y Moderna**: Desarrollada con `CustomTkinter` para una experiencia visual fluida y profesional.
 * **Optimización de Memoria**: Arquitectura ligera y gestión de basura (GC) para garantizar el mínimo consumo de RAM.
 * **Seguridad Garantizada**: Código fuente abierto para auditoría pública, asegurando un entorno 100% libre de software malicioso.
-* **Personalización de Instancia**: Selector de versiones oficiales y soporte para configuraciones de usuario.
 
 ---
 
-## 🔒 Compromiso de Transparencia (Anti-Virus)
+## 🔒 Compromiso de Transparencia
 
 La confianza es la base de nuestra comunidad. Por ello, el código de **Nexo Abierto Launcher** es visible para cualquier usuario.
 
@@ -41,4 +39,4 @@ La confianza es la base de nuestra comunidad. Por ello, el código de **Nexo Abi
 Para clonar y auditar el código fuente en su entorno local, instale las dependencias necesarias:
 
 ```bash
-pip install customtkinter pillow minecraft-launcher-lib
+pip install -r requirements.txt
