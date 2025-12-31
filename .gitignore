@@ -1,2 +1,15 @@
 .env
-.minecraft/
+*.env
+__pycache__/
+**/__pycache__/
+venv/
+env/
+.venv/
+.env/
+*.log
+*.tmp
+*.bak
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

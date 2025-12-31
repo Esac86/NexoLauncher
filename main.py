@@ -1,14 +1,8 @@
-import os
-import sys
+from app.ui.launcher_ui import Launcher
+from app.services.minecraft import PlayService
 
-os.environ["PYTHONDONTWRITEBYTECODE"] = "1"
-sys.dont_write_bytecode = True
+def onPlay(username, version):
+    pass
 
-from app.ui import Launcher
-from app.services.onPlay import onPlay
-
-def main():
-    Launcher(onPlay).mainloop()
-    
 if __name__ == "__main__":
-    main()
+    Launcher(onPlay).mainloop()
