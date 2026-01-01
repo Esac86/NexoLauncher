@@ -19,12 +19,25 @@ class PlayService:
         self.is_running = True
         threading.Thread(target=self._run, args=(username, version), daemon=True).start()
 
+    def _first_run_setup(self):
+        options_path = os.path.join(MC_DIR, "options.txt")
+        if os.path.exists(options_path):
+            return
+        with open(options_path, "w", encoding="utf-8") as f:
+            f.write(
+                "lang:es_mx\n"
+                "narrator:0\n"
+                "tutorialStep:none\n"
+                "onboardAccessibility:false\n"
+            )
+
     def _run(self, username, version):
         try:
             self.on_state_change("installing")
             path_version = os.path.join(MC_DIR, "versions", version)
             if not os.path.exists(path_version):
                 mll.install.install_minecraft_version(version, MC_DIR)
+            self._first_run_setup()
             self.on_state_change("playing")
             options = {
                 "username": username,

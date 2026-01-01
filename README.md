@@ -1,6 +1,6 @@
 # 🚀 Nexo Abierto Launcher
 
-![Versión](https://img.shields.io/badge/Versi%C3%B3n-1.0.0--Stable-FF55FF?style=for-the-badge)
+![Versión](https://img.shields.io/badge/Versi%C3%B3n-1.0.1--Stable-FF55FF?style=for-the-badge)
 ![Python](https://img.shields.io/badge/Python-3.10+-55FFFF?style=for-the-badge&logo=python)
 ![Licencia](https://img.shields.io/badge/Licencia-Proprietaria-red?style=for-the-badge)
 
