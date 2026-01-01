@@ -13,7 +13,9 @@ class VersionService:
     @staticmethod
     def is_installed(version):
         path_version = os.path.join(MC_DIR, "versions", version)
-        return os.path.exists(path_version)
+        version_json = os.path.join(path_version, f"{version}.json")
+        version_jar = os.path.join(path_version, f"{version}.jar")
+        return os.path.exists(path_version) and os.path.exists(version_json) and os.path.exists(version_jar)
 
     @staticmethod
     def latest_release():

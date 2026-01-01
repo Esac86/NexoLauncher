@@ -5,7 +5,6 @@ import ctypes
 import os
 import gc
 import threading
-
 from app.services.config import load_config, save_config
 from app.services.versions import VersionService
 from app.services.minecraft import PlayService
@@ -17,47 +16,108 @@ PRIMARIO = "#FF55FF"
 SECUNDARIO = "#55FFFF"
 APP_NAME = "Nexo Abierto Launcher"
 
-
-class VersionComboBox(ctk.CTkComboBox):
-    __slots__ = ("versions", "on_version_change")
-
+class VersionPicker(ctk.CTkFrame):
     def __init__(self, parent, on_version_change=None, **kwargs):
+        super().__init__(parent, fg_color="transparent")
         self.versions = VersionService.get_versions("release")
         self.on_version_change = on_version_change
+        self.is_open = False
+        self._disabled = False
 
-        config = {
-            "values": self.versions,
-            "height": 50,
-            "width": 320,
-            "corner_radius": 16,
-            "fg_color": "#0b1220",
-            "border_color": PRIMARIO,
-            "border_width": 2,
-            "button_color": PRIMARIO,
-            "button_hover_color": SECUNDARIO,
-            "dropdown_fg_color": "#0b1220",
-            "dropdown_hover_color": "#1e293b",
-            "dropdown_text_color": SECUNDARIO,
-            "font": ("Segoe UI Semibold", 15),
-            "state": "readonly",
-            "justify": "center",
-            "command": self._on_select
-        }
-        config.update(kwargs)
-        super().__init__(parent, **config)
+        self.main_button = ctk.CTkButton(
+            self, 
+            text="Seleccionar Versión",
+            height=50, 
+            width=320, 
+            corner_radius=16,
+            fg_color="#0b1220", 
+            border_color=PRIMARIO, 
+            border_width=2,
+            text_color=SECUNDARIO, 
+            font=("Segoe UI Semibold", 15),
+            hover_color="#1e293b",
+            command=self._toggle_dropdown
+        )
+        self.main_button.pack()
 
-        if self.versions:
-            self.set(self.versions[0])
+        self.dropdown_frame = ctk.CTkScrollableFrame(
+            self.master.master, 
+            width=300, 
+            height=200,
+            fg_color="#0b1220", 
+            border_color=PRIMARIO, 
+            border_width=2,
+            corner_radius=12,
+            scrollbar_button_color=PRIMARIO,
+            scrollbar_button_hover_color=SECUNDARIO
+        )
+        
+        self._populate_list()
 
-        self.bind("<FocusIn>", lambda e: self.configure(border_color=SECUNDARIO))
-        self.bind("<FocusOut>", lambda e: self.configure(border_color=PRIMARIO))
+    def set_state(self, state):
+        self._disabled = (state == "disabled")
+        self.main_button.configure(state=state)
+        if self.is_open and self._disabled:
+            self._close_dropdown()
 
-    def _on_select(self, choice):
+    def _populate_list(self):
+        for version in self.versions:
+            btn = ctk.CTkButton(
+                self.dropdown_frame,
+                text=version,
+                fg_color="transparent",
+                text_color="#FFFFFF",
+                hover_color="#1e293b",
+                font=("Segoe UI", 13),
+                anchor="center",
+                height=35,
+                command=lambda v=version: self._select_version(v)
+            )
+            btn.pack(fill="x", padx=5, pady=2)
+
+    def _toggle_dropdown(self):
+        if self._disabled: return
+        if self.is_open:
+            self._close_dropdown()
+        else:
+            self._open_dropdown()
+
+    def _open_dropdown(self):
+        self.main_button.update_idletasks()
+        parent_frame = self.master.master
+        x = self.main_button.winfo_rootx() - parent_frame.winfo_rootx()
+        y = self.main_button.winfo_rooty() - parent_frame.winfo_rooty() + self.main_button.winfo_height()
+        
+        self.dropdown_frame.place(x=x, y=y)
+        self.dropdown_frame.lift()
+        self.main_button.configure(border_color=SECUNDARIO)
+        self.is_open = True
+        
+        self.master.winfo_toplevel().bind("<Button-1>", self._check_click_outside, add="+")
+
+    def _close_dropdown(self):
+        self.dropdown_frame.place_forget()
+        self.main_button.configure(border_color=PRIMARIO)
+        self.is_open = False
+        self.master.winfo_toplevel().unbind("<Button-1>")
+
+    def _check_click_outside(self, event):
+        if not self.is_open: return
+        target = event.widget
+        if target != self.main_button and not str(target).startswith(str(self.dropdown_frame)):
+            self._close_dropdown()
+
+    def _select_version(self, version):
+        self.main_button.configure(text=version)
+        self._close_dropdown()
         if self.on_version_change:
-            self.on_version_change(choice)
+            self.on_version_change(version)
 
-    def get_selected_version(self):
-        return self.get()
+    def get(self):
+        return self.main_button.cget("text")
+
+    def set(self, value):
+        self.main_button.configure(text=value)
 
     def is_selected_installed(self):
         return VersionService.is_installed(self.get())
@@ -139,42 +199,27 @@ class Launcher(ctk.CTk):
         self.user = ctk.CTkEntry(
             right_frame,
             placeholder_text="Nombre de usuario",
-            height=50,
-            width=320,
-            corner_radius=16,
-            fg_color="#0b1220",
-            border_color=PRIMARIO,
-            border_width=2,
-            text_color=SECUNDARIO,
-            placeholder_text_color="#94a3b8",
-            font=("Segoe UI Semibold", 16),
-            justify="center"
+            height=50, width=320, corner_radius=16,
+            fg_color="#0b1220", border_color=PRIMARIO, border_width=2,
+            text_color=SECUNDARIO, placeholder_text_color="#94a3b8",
+            font=("Segoe UI Semibold", 16), justify="center"
         )
         self.user.grid(row=1, column=0, pady=10)
-        self.user.bind("<FocusIn>", lambda e: self.user.configure(border_color=SECUNDARIO))
-        self.user.bind("<FocusOut>", lambda e: self.user.configure(border_color=PRIMARIO))
 
-        self.combo = VersionComboBox(
+        self.combo = VersionPicker(
             right_frame,
             on_version_change=lambda _: self.check_version_installed()
         )
         self.combo.grid(row=2, column=0, pady=10)
 
         self.status_label = ctk.CTkLabel(
-            right_frame,
-            text="",
-            font=("Segoe UI", 12),
-            text_color="#AAAAAA"
+            right_frame, text="", font=("Segoe UI", 12), text_color="#AAAAAA"
         )
         self.status_label.grid(row=3, column=0, pady=(10, 0))
 
         self.progress_bar = ctk.CTkProgressBar(
-            right_frame,
-            width=320,
-            height=12,
-            corner_radius=6,
-            progress_color=PRIMARIO,
-            fg_color="#1e293b"
+            right_frame, width=320, height=12, corner_radius=6,
+            progress_color=PRIMARIO, fg_color="#1e293b"
         )
         self.progress_bar.set(0)
         self.progress_bar.grid(row=4, column=0, pady=(5, 10))
@@ -183,12 +228,9 @@ class Launcher(ctk.CTk):
         self.play_btn = ctk.CTkButton(
             right_frame,
             text="▶ JUGAR",
-            height=56,
-            width=320,
-            corner_radius=18,
+            height=56, width=320, corner_radius=18,
             font=("Segoe UI", 20, "bold"),
-            fg_color=PRIMARIO,
-            hover_color=SECUNDARIO,
+            fg_color=PRIMARIO, hover_color=SECUNDARIO,
             command=self._on_play_click
         )
         self.play_btn.grid(row=5, column=0, pady=10)
@@ -200,12 +242,15 @@ class Launcher(ctk.CTk):
             text_color="#555555"
         ).grid(row=6, column=0, pady=(5, 0))
 
+
     def _load_config(self):
         cfg = load_config()
         if cfg.get("username"):
             self.user.insert(0, cfg["username"])
-        if cfg.get("version") in self.combo.versions:
-            self.combo.set(cfg["version"])
+        
+        saved_v = cfg.get("version")
+        if saved_v in self.combo.versions:
+            self.combo.set(saved_v)
         self.check_version_installed()
 
     def _check_updates(self):
@@ -220,8 +265,8 @@ class Launcher(ctk.CTk):
         if not username:
             messagebox.showwarning("Atención", "Escribe un nombre de usuario")
             return
-        save_config(username=username, version=self.combo.get_selected_version())
-        self.play_service.launch(username, self.combo.get_selected_version())
+        save_config(username=username, version=self.combo.get())
+        self.play_service.launch(username, self.combo.get())
 
     def check_version_installed(self):
         self.play_btn.configure(
@@ -230,6 +275,7 @@ class Launcher(ctk.CTk):
 
     def update_button_state(self, state, current=0, total=0, message=None):
         if state == "installing":
+            self.combo.set_state("disabled")
             self.progress_bar.grid()
             self.play_btn.configure(text="⏳ INSTALANDO...", state="disabled", fg_color="#444444")
             if total > 0:
@@ -243,10 +289,12 @@ class Launcher(ctk.CTk):
                 self.status_label.configure(text="Preparando archivos...")
 
         elif state == "playing":
+            self.combo.set_state("disabled")
             self.progress_bar.grid_remove()
             self.play_btn.configure(text="🎮 JUGANDO...", state="disabled")
 
         elif state == "ready":
+            self.combo.set_state("normal") 
             self.progress_bar.grid_remove()
             self.status_label.configure(text="")
             self.play_btn.configure(state="normal", fg_color=PRIMARIO)
@@ -254,6 +302,7 @@ class Launcher(ctk.CTk):
             gc.collect()
 
         elif state == "error":
+            self.combo.set_state("normal")
             self.progress_bar.grid_remove()
             self.play_btn.configure(state="normal", fg_color=PRIMARIO)
             self.check_version_installed()
