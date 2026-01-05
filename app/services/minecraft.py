@@ -2,13 +2,14 @@ import os
 import subprocess
 import threading
 import minecraft_launcher_lib as mll
-from app.utils.paths import MC_DIR
+from app.utils.paths import DIR
 
 class PlayService:
     def __init__(self, on_play_callback, on_state_change):
         self.on_play_callback = on_play_callback
         self.on_state_change = on_state_change
         self.is_running = False
+        self.minecraft_process = None
 
     def launch(self, username, version):
         if self.is_running:
@@ -20,7 +21,7 @@ class PlayService:
         threading.Thread(target=self._run, args=(username, version), daemon=True).start()
 
     def _first_run_setup(self):
-        options_path = os.path.join(MC_DIR, "options.txt")
+        options_path = os.path.join(DIR, "options.txt")
         if os.path.exists(options_path):
             return
         with open(options_path, "w", encoding="utf-8") as f:
@@ -29,15 +30,20 @@ class PlayService:
                 "narrator:0\n"
                 "tutorialStep:none\n"
                 "onboardAccessibility:false\n"
+                "guiScale:2\n"
+                "skipMultiplayerWarning:true\n"
             )
 
     def _run(self, username, version):
         try:
             self.on_state_change("installing")
-            path_version = os.path.join(MC_DIR, "versions", version)
+            path_version = os.path.join(DIR, "versions", version)
             if not os.path.exists(path_version):
-                mll.install.install_minecraft_version(version, MC_DIR)
+                mll.install.install_minecraft_version(version, DIR)
             self._first_run_setup()
+            
+            self.on_state_change("hide_to_tray")
+            
             self.on_state_change("playing")
             options = {
                 "username": username,
@@ -45,11 +51,15 @@ class PlayService:
                 "token": "",
                 "jvmArguments": ["-Xmx2G"]
             }
-            cmd = mll.command.get_minecraft_command(version, MC_DIR, options)
+            cmd = mll.command.get_minecraft_command(version, DIR, options)
             creationflags = subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0
-            subprocess.run(cmd, cwd=MC_DIR, creationflags=creationflags)
+            
+            self.minecraft_process = subprocess.Popen(cmd, cwd=DIR, creationflags=creationflags)
+            self.minecraft_process.wait() 
+            
             self.on_state_change("ready")
         except Exception as e:
             self.on_state_change("error", str(e))
         finally:
+            self.minecraft_process = None
             self.is_running = False

@@ -1,35 +1,25 @@
-COPYRIGHT (C) 2025 NEXO ABIERTO LAUNCHER
+COPYRIGHT (C) 2026 NEXO ABIERTO LAUNCHER (ESAC86)
 TODOS LOS DERECHOS RESERVADOS.
 
-ESTE SOFTWARE ES PROPIEDAD EXCLUSIVA DE NEXO ABIERTO. EL CÓDIGO FUENTE SE PUBLICA 
-ÚNICAMENTE CON FINES DE AUDITORÍA, TRANSPARENCIA Y VERIFICACIÓN DE SEGURIDAD.
+ESTE SOFTWARE, INCLUYENDO SU CÓDIGO FUENTE, BINARIOS, ASSETS Y DOCUMENTACIÓN, ES PROPIEDAD EXCLUSIVA DE NEXO ABIERTO. SU PUBLICACIÓN EN ESTE REPOSITORIO TIENE COMO ÚNICO FIN LA AUDITORÍA, TRANSPARENCIA Y VERIFICACIÓN DE SEGURIDAD. LA PRESENTE LICENCIA NO CONFIERE DERECHOS DE USO, COPIA, DISTRIBUCIÓN, MODIFICACIÓN NI REDISTRIBUCIÓN, SALVO LO EXPLÍCITAMENTE AUTORIZADO A CONTINUACIÓN.
 
-1. TÉRMINOS DE LA LICENCIA
-Por la presente, se concede permiso para visualizar el código fuente de este 
-Software en este repositorio oficial. Esta concesión no constituye una 
-transferencia de propiedad ni una licencia de uso.
+1. TÉRMINOS DE VISUALIZACIÓN
+Se permite únicamente la **visualización del código fuente** con fines de auditoría y verificación de seguridad. Esta concesión **no constituye transferencia de propiedad ni licencia de uso**.
 
-2. RESTRICCIONES DE USO
-Queda terminantemente PROHIBIDO a cualquier persona física o jurídica:
-   a) Copiar, redistribuir, publicar o sublicenciar el código fuente o sus binarios.
+2. RESTRICCIONES
+Queda estrictamente prohibido a cualquier persona física o jurídica:
+   a) Copiar, redistribuir, publicar, sublicenciar o clonar el código fuente, binarios o assets.
    b) Modificar, descompilar, realizar ingeniería inversa o crear obras derivadas.
-   c) Ejecutar, instalar o utilizar el Software para fines personales o comerciales
-      sin una autorización previa, expresa y por escrito del titular del copyright.
-   d) Eliminar cualquier aviso de copyright o propiedad de los archivos originales.
+   c) Usar el Software para fines comerciales o lucrativos sin autorización expresa y por escrito de Nexo Abierto.
+   d) Eliminar, alterar o suprimir cualquier aviso de copyright o propiedad.
 
 3. AUDITORÍA DE SEGURIDAD
-La disponibilidad del código tiene como único objetivo permitir a los usuarios 
-finales confirmar la integridad del Software y la ausencia de elementos maliciosos. 
-Cualquier otro uso constituye una infracción de los derechos de autor.
+El código fuente se ofrece únicamente para que los usuarios finales puedan **verificar la integridad y seguridad** del Software. Cualquier otro uso constituye una infracción de derechos de autor.
 
-4. RENUNCIA DE RESPONSABILIDAD
-EL SOFTWARE SE PROPORCIONA "TAL CUAL", SIN GARANTÍAS DE NINGÚN TIPO, YA SEAN 
-EXPRESAS O IMPLÍCITAS. EN NINGÚN CASO EL AUTOR SERÁ RESPONSABLE DE RECLAMACIONES, 
-DAÑOS O PERJUICIOS RESULTANTES DE LA VISUALIZACIÓN O EL INTENTO DE USO DE ESTE 
-CÓDIGO FUENTE.
+4. RENUNCIA DE GARANTÍAS
+EL SOFTWARE SE PROPORCIONA "TAL CUAL", SIN GARANTÍAS DE NINGÚN TIPO, EXPRESAS O IMPLÍCITAS. NEXO ABIERTO NO SERÁ RESPONSABLE DE RECLAMACIONES, DAÑOS O PERJUICIOS DERIVADOS DEL MAL USO O INTENTO DE MODIFICACIÓN DEL SOFTWARE, YA SEA EN CÓDIGO FUENTE O BINARIO.
 
 5. JURISDICCIÓN
-Cualquier disputa relacionada con esta licencia quedará sujeta a las leyes 
-internacionales de propiedad intelectual y tratados de copyright vigentes.
+Cualquier disputa relacionada con esta licencia será regulada por las leyes internacionales de propiedad intelectual y tratados de copyright vigentes, y por la legislación aplicable al titular de los derechos.
 
-AL ACCEDER A ESTE CÓDIGO, USTED ACEPTA QUEDAR VINCULADO POR LOS TÉRMINOS AQUÍ EXPUESTOS.
+AL ACCEDER O VISUALIZAR ESTE CÓDIGO, USTED ACEPTA QUEDAR VINCULADO POR LOS TÉRMINOS AQUÍ EXPUESTOS.

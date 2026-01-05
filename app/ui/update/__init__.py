@@ -2,7 +2,7 @@ import customtkinter as ctk
 import threading
 import sys
 import os
-from app.utils.helpers import resource_path
+from app.utils.resources import resource_path
 
 PRIMARIO = "#FF55FF"
 SECUNDARIO = "#55FFFF"

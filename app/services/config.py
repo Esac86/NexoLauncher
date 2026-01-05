@@ -1,30 +1,30 @@
 import json
+from pathlib import Path
 from app.utils.paths import CONFIG_FILE
 
 DEFAULT_CONFIG = {
     "username": "",
-    "version": ""
+    "version": "",
+    "mode": "simple" 
 }
 
-def load_config():
-    try:
-        with open(CONFIG_FILE, "r", encoding="utf-8") as f:
-            data = json.load(f)
-            return {**DEFAULT_CONFIG, **data}
-    except FileNotFoundError:
-        return DEFAULT_CONFIG.copy()
-    except Exception as e:
-        print("Error cargando configuración:", e)
+def load_config() -> dict:
+    if not CONFIG_FILE.exists():
         return DEFAULT_CONFIG.copy()
 
-def save_config(username=None, version=None):
-    config = load_config()
-    if username is not None:
-        config["username"] = username
-    if version is not None:
-        config["version"] = version
     try:
-        with open(CONFIG_FILE, "w", encoding="utf-8") as f:
-            json.dump(config, f, indent=4, ensure_ascii=False)
-    except Exception as e:
-        print("Error guardando configuración:", e)
+        data = json.loads(CONFIG_FILE.read_text(encoding="utf-8"))
+        return {**DEFAULT_CONFIG, **data}
+    except Exception:
+        return DEFAULT_CONFIG.copy()
+
+def save_config(**kwargs) -> None:
+    config = load_config()
+    config.update({k: v for k, v in kwargs.items() if v is not None})
+
+    tmp: Path = CONFIG_FILE.with_suffix(".tmp")
+    tmp.write_text(
+        json.dumps(config, indent=4, ensure_ascii=False),
+        encoding="utf-8"
+    )
+    tmp.replace(CONFIG_FILE)

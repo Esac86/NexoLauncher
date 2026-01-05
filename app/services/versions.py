@@ -1,6 +1,6 @@
 import os
 import minecraft_launcher_lib as mll
-from app.utils.paths import MC_DIR
+from app.utils.paths import DIR
 
 class VersionService:
     @staticmethod
@@ -12,7 +12,7 @@ class VersionService:
 
     @staticmethod
     def is_installed(version):
-        path_version = os.path.join(MC_DIR, "versions", version)
+        path_version = os.path.join(DIR, "versions", version)
         version_json = os.path.join(path_version, f"{version}.json")
         version_jar = os.path.join(path_version, f"{version}.jar")
         return os.path.exists(path_version) and os.path.exists(version_json) and os.path.exists(version_jar)
