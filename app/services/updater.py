@@ -4,12 +4,9 @@ import sys
 import subprocess
 import tempfile
 from packaging import version
-from app.utils.resources import resource_path
 
 CURRENT_VERSION = "1.0.2"
-REPO_OWNER = "Esac86"
-REPO_NAME = "NexoAbiertoLauncher"
-GITHUB_API_URL = f"https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}/releases/latest"
+GITHUB_API_URL = "https://api.github.com/repos/Esac86/NexoAbiertoLauncher/releases/latest"
 
 class UpdateService:
     @staticmethod
@@ -56,8 +53,8 @@ class UpdateService:
                         if on_progress and total_size > 0:
                             on_progress(downloaded, total_size)
             
-            from app.utils.paths import CONFIG_DIR
-            flag_file = os.path.join(CONFIG_DIR, ".just_updated")
+            from app.utils.paths import DIR
+            flag_file = os.path.join(DIR, ".just_updated")
             with open(flag_file, 'w') as f:
                 f.write(latest_version)
             
@@ -65,11 +62,16 @@ class UpdateService:
             if not current_exe:
                 return False
             
+            current_exe = os.path.abspath(current_exe)
+            current_dir = os.path.dirname(current_exe)
+            
             batch_script = f'''@echo off
+cd /d "{current_dir}"
 timeout /t 2 /nobreak >nul
 taskkill /F /IM "{os.path.basename(current_exe)}" >nul 2>&1
-timeout /t 1 /nobreak >nul
+timeout /t 2 /nobreak >nul
 move /Y "{temp_file}" "{current_exe}"
+timeout /t 1 /nobreak >nul
 start "" "{current_exe}"
 del "%~f0"
 '''
@@ -79,9 +81,12 @@ del "%~f0"
                 f.write(batch_script)
             
             subprocess.Popen(['cmd', '/c', batch_file], 
-                           creationflags=subprocess.CREATE_NO_WINDOW)
+                           creationflags=subprocess.CREATE_NO_WINDOW,
+                           cwd=current_dir)
             return True
             
         except Exception as e:
             print(f"Error descargando actualización: {e}")
+            import traceback
+            traceback.print_exc()
             return False
