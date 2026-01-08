@@ -1,33 +1,49 @@
 import PyInstaller.__main__
 import shutil
-import stat
 import os
+import stat
 
-def force_remove(func, path, exc_info):
+def force_remove(func, path, _):
     os.chmod(path, stat.S_IWRITE)
     func(path)
 
-for folder in ("build", "dist"):
-    if os.path.exists(folder):
-        shutil.rmtree(folder, onerror=force_remove)
+def clean():
+    for f in ("build", "dist"):
+        if os.path.exists(f):
+            shutil.rmtree(f, onerror=force_remove)
 
-spec_file = "Nexo Abierto Launcher.spec"
-if os.path.exists(spec_file):
-    os.remove(spec_file)
+    for spec in ("Updater.spec", "Nexo Launcher.spec"):
+        if os.path.exists(spec):
+            os.remove(spec)
+
+clean()
+
+PyInstaller.__main__.run([
+    "updater.py",
+    "--name=Updater",
+    "--onefile",
+    "--windowed",
+    "--icon=assets/updater.ico",
+    "--noconfirm",
+    "--clean"
+])
 
 PyInstaller.__main__.run([
     "main.py",
-    "--name=Nexo Abierto Launcher",
+    "--name=Nexo Launcher",
     "--onefile",
     "--windowed",
     "--icon=assets/favicon.ico",
+    "--add-binary=dist/Updater.exe;.",
     "--add-data=assets/favicon.ico;assets",
-    "--upx-dir=C:\\upx-5.0.2-win64",
-    "--noconfirm"
+    "--noconfirm",
+    "--clean",
+    "--hidden-import=win32com.client",
+    "--hidden-import=win32timezone"
 ])
 
-if os.path.exists("build"):
-    shutil.rmtree("build", onerror=force_remove)
+shutil.rmtree("build", onerror=force_remove)
 
-if os.path.exists(spec_file):
-    os.remove(spec_file)
+for spec in ("Updater.spec", "Nexo Launcher.spec"):
+    if os.path.exists(spec):
+        os.remove(spec)

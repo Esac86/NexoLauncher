@@ -19,9 +19,9 @@ class SystemTray:
         )
         
         self.icon = pystray.Icon(
-            "NexoAbiertoLauncher",
+            "NexoLauncher",
             image,
-            "Nexo Abierto Launcher",
+            "Nexo Launcher",
             menu
         )
         

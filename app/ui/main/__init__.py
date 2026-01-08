@@ -19,7 +19,7 @@ from app.utils.tray import SystemTray
 
 PRIMARIO = "#FF55FF"
 SECUNDARIO = "#55FFFF"
-APP_NAME = "Nexo Abierto Launcher"
+APP_NAME = "Nexo Launcher"
 AZURE_CLIENT_ID = "5df0d729-2718-4ad1-9793-0cf6c3212ad2"
 AZURE_REDIRECT_URI = "http://localhost:25566/callback"
 MICROSOFT_LOGIN_ENABLED = True

@@ -21,7 +21,7 @@ class DiscordRPC:
             from pypresence import Presence
             self.rpc = Presence(CLIENT_ID)
             self.rpc.connect()
-            self.update_status("Jugando a Nexo Abierto Launcher", "Abierto")
+            self.update_status("Jugando a Nexo Launcher", "Abierto")
             
             while self._running:
                 time.sleep(30)  

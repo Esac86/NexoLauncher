@@ -8,7 +8,8 @@ DEFAULT_CONFIG = {
     "mode": "simple",
     "ms_account": False,
     "refresh_token": None,
-    "mod_type": "vanilla"
+    "mod_type": "vanilla",
+    "launcher_version": ""
 }
 
 
@@ -29,7 +30,7 @@ def save_config(**kwargs) -> None:
     for key, value in kwargs.items():
         config[key] = value
 
-        tmp: Path = CONFIG_FILE.with_suffix(".tmp")
+    tmp: Path = CONFIG_FILE.with_suffix(".tmp")
     tmp.write_text(
         json.dumps(config, indent=4, ensure_ascii=False),
         encoding="utf-8"
