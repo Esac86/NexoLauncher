@@ -8,7 +8,7 @@ from packaging import version
 from app.utils.paths import APP_EXE, UPDATER_EXE
 from app.services.config import load_config, save_config
 
-CURRENT_VERSION = "1.0"
+CURRENT_VERSION = "0.8"
 GITHUB_API_URL = "https://api.github.com/repos/Esac86/NexoLauncher/releases/latest"
 
 
