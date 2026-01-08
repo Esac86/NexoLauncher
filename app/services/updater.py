@@ -5,7 +5,7 @@ import subprocess
 import tempfile
 from packaging import version
 
-CURRENT_VERSION = "1.0.2"
+CURRENT_VERSION = "1.0.3"
 GITHUB_API_URL = "https://api.github.com/repos/Esac86/NexoAbiertoLauncher/releases/latest"
 
 class UpdateService:

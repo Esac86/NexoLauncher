@@ -5,8 +5,12 @@ from app.utils.paths import CONFIG_FILE
 DEFAULT_CONFIG = {
     "username": "",
     "version": "",
-    "mode": "simple" 
+    "mode": "simple",
+    "ms_account": False,
+    "refresh_token": None,
+    "mod_type": "vanilla"
 }
+
 
 def load_config() -> dict:
     if not CONFIG_FILE.exists():
@@ -18,11 +22,14 @@ def load_config() -> dict:
     except Exception:
         return DEFAULT_CONFIG.copy()
 
+
 def save_config(**kwargs) -> None:
     config = load_config()
-    config.update({k: v for k, v in kwargs.items() if v is not None})
 
-    tmp: Path = CONFIG_FILE.with_suffix(".tmp")
+    for key, value in kwargs.items():
+        config[key] = value
+
+        tmp: Path = CONFIG_FILE.with_suffix(".tmp")
     tmp.write_text(
         json.dumps(config, indent=4, ensure_ascii=False),
         encoding="utf-8"

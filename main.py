@@ -8,4 +8,3 @@ def onPlay():
 
 if __name__ == "__main__":
     Launcher(onPlay).mainloop()
-    
