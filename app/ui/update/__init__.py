@@ -8,7 +8,6 @@ from app.services.updater import UpdateService
 PRIMARIO = "#FF55FF"
 SECUNDARIO = "#55FFFF"
 
-
 class AutoUpdateDialog(ctk.CTkToplevel):
     def __init__(self, parent, update_info, updater_service):
         super().__init__(parent)
@@ -21,7 +20,7 @@ class AutoUpdateDialog(ctk.CTkToplevel):
         self.configure(fg_color="#020617")
 
         try:
-            ico = resource_path("assets/favicon.ico")
+            ico = resource_path("assets/updater.ico")
             if os.path.exists(ico):
                 self.iconbitmap(ico)
         except:
@@ -30,9 +29,20 @@ class AutoUpdateDialog(ctk.CTkToplevel):
         self.transient(parent)
         self.grab_set()
         self.protocol("WM_DELETE_WINDOW", lambda: None)
+        self._center_window(parent)
 
         self._setup_ui()
         self._start_update()
+
+    def _center_window(self, parent):
+        """Centrar la ventana sobre la ventana padre."""
+        self.update_idletasks()
+        w, h = self.winfo_width(), self.winfo_height()
+        px, py = parent.winfo_x(), parent.winfo_y()
+        pw, ph = parent.winfo_width(), parent.winfo_height()
+        x = px + (pw // 2) - (w // 2)
+        y = py + (ph // 2) - (h // 2)
+        self.geometry(f"{w}x{h}+{x}+{y}")
 
     def _setup_ui(self):
         frame = ctk.CTkFrame(

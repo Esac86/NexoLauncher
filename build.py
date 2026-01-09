@@ -103,7 +103,7 @@ def build_installer():
     iscc_exe = r"C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
     if not os.path.exists(iscc_exe):
         return False
-    iss_file = Path("installer/installer.iss")
+    iss_file = Path("setup/installer.iss")
     if not iss_file.exists():
         return False
     result = subprocess.run([iscc_exe, str(iss_file)], capture_output=True, text=True)
