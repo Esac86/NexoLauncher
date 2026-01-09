@@ -69,12 +69,10 @@ def sign_with_signtool(exe_path):
 
 def build_executables():
     
-    upx_dir = r"C:\upx-5.0.2-win64"
 
     common_options = [
         "--noconfirm",
         "--clean",
-        f"--upx-dir={upx_dir}",
         "--optimize=2",
         "--version-file=version_info.txt",
         "--exclude-module=pytest",
