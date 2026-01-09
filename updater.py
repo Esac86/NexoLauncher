@@ -3,6 +3,7 @@ import requests
 import subprocess
 import sys
 import os
+from pathlib import Path
 import time
 
 parser = argparse.ArgumentParser()
@@ -10,68 +11,41 @@ parser.add_argument("--url", required=True)
 parser.add_argument("--target", required=True)
 args = parser.parse_args()
 
-target = os.path.abspath(args.target)
-temp = target + ".new"
-exe_name = os.path.basename(target)
+target = Path(args.target).resolve()
+temp = target.with_suffix(".new")
 
-r = requests.get(args.url, stream=True)
-r.raise_for_status()
+try:
+    r = requests.get(args.url, stream=True, timeout=30)
+    r.raise_for_status()
 
-with open(temp, "wb") as f:
-    total = int(r.headers.get('content-length', 0))
-    downloaded = 0
-    for chunk in r.iter_content(8192):
-        if chunk:
-            f.write(chunk)
-            downloaded += len(chunk)
-            if total > 0:
-                progress = (downloaded / total) * 100
-                print(f"Progreso: {progress:.1f}%", end='\r')
+    with open(temp, "wb") as f:
+        for chunk in r.iter_content(8192):
+            if chunk:
+                f.write(chunk)
 
+    max_retries = 5
+    for i in range(max_retries):
+        try:
+            if target.exists():
+                target.unlink()
+            temp.rename(target)
+            break
+        except PermissionError:
+            if i < max_retries - 1:
+                time.sleep(2)
+            else:
+                raise
 
-time.sleep(1)
-
-cmd = f'''
-@echo off
-echo Cerrando launcher...
-taskkill /F /IM "{exe_name}" > nul 2>&1
-
-echo Esperando cierre...
-ping 127.0.0.1 -n 3 > nul
-
-echo Reemplazando ejecutable...
-if exist "{temp}" (
-    del /f /q "{target}" 2>nul
-    move /Y "{temp}" "{target}"
-    if exist "{target}" (
-        echo Actualización completada
-        echo Iniciando launcher...
-        start "" "{target}"
-    ) else (
-        echo Error: No se pudo reemplazar el ejecutable
-        pause
+    subprocess.Popen(
+        [str(target)],
+        cwd=str(target.parent),
+        creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0
     )
-) else (
-    echo Error: Archivo temporal no encontrado
-    pause
-)
 
-rem Autodestrucción del script
-del "%~f0"
-'''
+except Exception as e:
+    log_path = Path(target.parent) / "updater_error.log"
+    with open(log_path, "a", encoding="utf-8") as f:
+        f.write(f"{e}\n")
+    sys.exit(1)
 
-import tempfile
-from pathlib import Path as PathLib
-
-temp_dir = PathLib(tempfile.gettempdir())
-batch_path = temp_dir / f"nexo_update_{os.getpid()}.bat"
-
-with open(batch_path, 'w', encoding='utf-8') as f:
-    f.write(cmd)
-
-subprocess.Popen(
-    ["cmd", "/c", str(batch_path)],
-    creationflags=subprocess.CREATE_NO_WINDOW,
-    cwd=os.path.dirname(target)
-)
 sys.exit(0)

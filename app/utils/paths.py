@@ -1,14 +1,17 @@
 import os
+import sys
 from pathlib import Path
 
-BASE_DIR = Path(os.getenv("APPDATA")) / ".nexoLauncher"
-BASE_DIR.mkdir(exist_ok=True)
+if getattr(sys, 'frozen', False):
+    APP_DIR = Path(sys.executable).parent
+else:
+    APP_DIR = Path(__file__).parent.parent.parent
 
-APP_EXE = BASE_DIR / "Launcher.exe"
-UPDATER_EXE = BASE_DIR / "Updater.exe"
-
-VERSION_FILE = BASE_DIR / "version.json"
-CONFIG_FILE = BASE_DIR / "config.json"
+APP_EXE = APP_DIR / \
+    "Nexo Launcher.exe" if getattr(
+        sys, 'frozen', False) else APP_DIR / "main.py"
+UPDATER_EXE = APP_DIR / "Updater.exe"
+CONFIG_FILE = APP_DIR / "config.json"
 
 DIR = Path(os.getenv("APPDATA")) / ".minecraft"
 DIR.mkdir(exist_ok=True)
